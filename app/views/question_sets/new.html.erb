@@ -1,0 +1,15 @@
+<h1>QuestionSets#new</h1>
+<p>Find me in app/views/question_sets/new.html.erb</p>
+
+<%= form_for @question_set do |f| %>
+	
+	<% @questions.each do |question| %> 
+
+		<%= f.label :question, question.content %> 
+		<%= f.check_box(:questions, {:multiple => true, checked: false}, question.id, false) %> 
+		<br/>
+
+	<% end %> 
+
+	<%= f.submit "Submit" %> 
+<% end %> 

@@ -1,0 +1,17 @@
+
+<%= form_for @test do |f| %>
+  
+  <%= f.label :test_name, "Give your test a name" %> 
+  <%= f.text_field :test_name %> 
+  <br/>
+  <br/>
+  <% @questions.each do |question| %> 
+
+    <%= f.label :question, question.content %> 
+    <%= f.check_box(:questions, {:multiple => true, checked: false}, question.id, false) %> 
+    <br/>
+
+  <% end %> 
+
+  <%= f.submit "Submit" %> 
+<% end %> 
