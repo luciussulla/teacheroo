@@ -1,4 +1,4 @@
-# This file is auto-generated from the current state of the database. Instead
+# This file is auchto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
 #
@@ -10,7 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_22_140329) do
+ActiveRecord::Schema.define(version: 2020_04_23_085718) do
+
+  create_table "question_sets", force: :cascade do |t|
+    t.integer "test_id", null: false
+    t.integer "question_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["question_id"], name: "index_question_sets_on_question_id"
+    t.index ["test_id"], name: "index_question_sets_on_test_id"
+  end
 
   create_table "questions", force: :cascade do |t|
     t.string "content"
@@ -46,4 +55,6 @@ ActiveRecord::Schema.define(version: 2020_04_22_140329) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  add_foreign_key "question_sets", "questions"
+  add_foreign_key "question_sets", "tests"
 end
