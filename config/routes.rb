@@ -6,6 +6,7 @@ resources :student_tests
 resources :teachers do 
   resources :tests
  end 
+resources :groups
   
 root "questions#index"
 	

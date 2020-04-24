@@ -1,6 +1,6 @@
 class TestsController < ApplicationController
   before_action :set_test, only: [:show, :edit, :update, :destroy]
-  before_action :set_teacher, only: [:new, :create]
+  before_action :set_teacher, only: [:new, :create, :show]
 
   def index
     unless Test.all.empty?
@@ -9,7 +9,7 @@ class TestsController < ApplicationController
   end
 
   def show
-
+  	
   end
 
   def new
@@ -30,7 +30,7 @@ class TestsController < ApplicationController
       flash[:notice] = "Creating NOT completed"
        print "\nindise block @test.save: creating test  NOT completed\n\n"
     end 
-
+    
     # creating the question_set associated with the test 
 
     questions_ids = params[:test][:questions]

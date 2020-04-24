@@ -1,3 +1,18 @@
-<%= @test.inspect %> 
+The test belongs to teacher: <%= @teacher.name ? @teacher.name : "Anonymous" %> 
+Test name is: <%= @test.test_name %> <br/>
+Test includes the following questions: <br/>
+
+<!-- 
+<%= @test.questions.inspect %> 
 <br/>
+<h2>QUestion_sets inspection</h2>
 <%= @test.question_sets.inspect %> 
+-->
+
+<% @test.questions.each do |question| %> 
+	- <%= question.content %> 
+<% end %> 
+
+Assign the test to the following groups: 
+<!-- we can make a dropdown list of groups and students --> 
+

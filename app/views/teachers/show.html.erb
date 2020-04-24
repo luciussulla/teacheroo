@@ -2,5 +2,10 @@
 <p>Find me in app/views/teachers/show.html.erb</p>
 
 <%= @teacher.name %> 
-
+<br/>
+<% @teacher.tests.each do |test| %> 
+	<%= link_to "Test name: #{test.test_name}", teacher_test_path(@teacher, test) %> 
+	<br/>
+<% end %>
+<br/>
 <%= link_to "Create new test", new_teacher_test_path(@teacher.id) %> 
