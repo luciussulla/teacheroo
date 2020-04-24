@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_23_085718) do
+ActiveRecord::Schema.define(version: 2020_04_24_072538) do
 
   create_table "question_sets", force: :cascade do |t|
     t.integer "test_id", null: false
@@ -30,6 +30,19 @@ ActiveRecord::Schema.define(version: 2020_04_23_085718) do
     t.string "correct_answer"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "student_tests", force: :cascade do |t|
+    t.integer "test_id", null: false
+    t.integer "student_id", null: false
+    t.integer "grade"
+    t.integer "time_taken"
+    t.datetime "taken_at"
+    t.string "remarks"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["student_id"], name: "index_student_tests_on_student_id"
+    t.index ["test_id"], name: "index_student_tests_on_test_id"
   end
 
   create_table "students", force: :cascade do |t|
@@ -53,8 +66,11 @@ ActiveRecord::Schema.define(version: 2020_04_23_085718) do
     t.string "test_name"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "teacher_id"
   end
 
   add_foreign_key "question_sets", "questions"
   add_foreign_key "question_sets", "tests"
+  add_foreign_key "student_tests", "students"
+  add_foreign_key "student_tests", "tests"
 end

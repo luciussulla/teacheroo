@@ -1,5 +1,6 @@
 class TestsController < ApplicationController
   before_action :set_test, only: [:show, :edit, :update, :destroy]
+  before_action :set_teacher, only: [:new, :create]
 
   def index
     unless Test.all.empty?
@@ -18,19 +19,28 @@ class TestsController < ApplicationController
 
   def create
     @test = Test.new(test_name: params[:test][:test_name])
-    @test.test_name = params[:test][:questions][0]
+    @test.teacher_id = @teacher.id.to_i
+    print "\nInside test create. params[:test][:test_name] is #{params[:test][:test_name]}\n"
+   	print "\nInside test create inspecting @test: #{@test.inspect}\n\n"
 
     if @test.save
       flash[:notice] = "Creating completed"
+      print "\nindise block @test.save: creating test completed\n\n"
     else 
       flash[:notice] = "Creating NOT completed"
+       print "\nindise block @test.save: creating test  NOT completed\n\n"
     end 
+
     # creating the question_set associated with the test 
-    question_ids = params[:test][:questions]
 
-	QuestionSet.create_new_set(question_ids, @test.id)
+    questions_ids = params[:test][:questions]
 
-    redirect_to @test
+    print "\n inside test create inspecting questions_ids: #{questions_ids}\n\n"
+    print "\n inside test create inspecting @tes.id: #{@test.id}\n\n"
+
+	QuestionSet.create_new_set(questions_ids, @test.id)
+
+    redirect_to [@teacher, @test]
   end 
 
   def edit
@@ -64,4 +74,9 @@ class TestsController < ApplicationController
   def test_params
     params.require(:test).permit(:test_name, questions: [])
   end
+
+  def set_teacher 
+  	@teacher = Teacher.find(params[:teacher_id])
+  	print  "Inside set_teacher. params[:teacher_id] is #{params[:teacher_id]}"
+  end 
 end
