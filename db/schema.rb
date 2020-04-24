@@ -10,7 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_24_072538) do
+ActiveRecord::Schema.define(version: 2020_04_24_110544) do
+
+  create_table "groups", force: :cascade do |t|
+    t.string "name"
+    t.integer "teacher_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
 
   create_table "question_sets", force: :cascade do |t|
     t.integer "test_id", null: false
@@ -53,6 +60,7 @@ ActiveRecord::Schema.define(version: 2020_04_24_072538) do
     t.integer "year"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "group_id"
   end
 
   create_table "teachers", force: :cascade do |t|
