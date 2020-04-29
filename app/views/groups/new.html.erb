@@ -1,2 +1,14 @@
 <h1>Groups#new</h1>
 <p>Find me in app/views/groups/new.html.erb</p>
+
+<%= form_for @group do |f| %> 
+	<%= f.label :name, "Group Name" %> <br/>
+	<%= f.text_field :name %><br/> 
+
+	<% @students.each do |student| %> 
+		<%= f.label :students, student.name %> 
+		<%= f.check_box :students, {multiple: true, checked: false}, student.id, false %><br/>
+	<% end %> 
+	
+	<%= f.submit "Submit" %> 	
+<% end %>

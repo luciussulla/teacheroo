@@ -1,6 +1,8 @@
-The test belongs to teacher: <%= @teacher.name ? @teacher.name : "Anonymous" %> 
-Test name is: <%= @test.test_name %> <br/>
-Test includes the following questions: <br/>
+
+<p>The test belongs to teacher: <%= @teacher.name ? @teacher.name : "Does not belong to teacher" %> </p>
+
+<p>Test name is: <%= @test.test_name %></p>
+<p>Test includes the following questions:</p>
 
 <!-- 
 <%= @test.questions.inspect %> 
@@ -8,11 +10,17 @@ Test includes the following questions: <br/>
 <h2>QUestion_sets inspection</h2>
 <%= @test.question_sets.inspect %> 
 -->
-
-<% @test.questions.each do |question| %> 
-	- <%= question.content %> 
+<ul>
+<% @test.questions.each do |q| %> 
+	 <li>Question: <%= q.content %></li> 
+	 <li>a) <%= q.option1 %></li>
+	 <li>b) <%= q.option1 %></li>
+	 <li>c) <%= q.option1 %></li>
+     <li>d) <%= q.option1 %></li>
+     <li>Correct answer: <%= q.correct_answer %></li>
 <% end %> 
-
+</ul>
+<p>You can edit the test here: </p>
 Assign the test to the following groups: 
 <!-- we can make a dropdown list of groups and students --> 
 

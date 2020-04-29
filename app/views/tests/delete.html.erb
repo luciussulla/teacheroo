@@ -1,0 +1,10 @@
+
+
+<!-- This part needs to he redirected to destroy/delete action --> 
+  <h2>You can remove old questions</h2>
+  <% @questions.each do |question| %> 
+    <%= f.label :question, question.content %> 
+    <%= f.check_box(:questions, {:multiple => true, checked: false}, question.id, false) %> 
+    <br/>  
+  <% end %> 
+<!-- This part needs to he redirected to destroy/delete action --> 

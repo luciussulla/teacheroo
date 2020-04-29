@@ -1,0 +1,15 @@
+<h1>Students#new</h1>
+<p>Find me in app/views/students/new.html.erb</p>
+
+<%= form_for @student do |f| %> 
+
+	<%= f.label :password, "Password" %> <br/>
+	<%= f.password_field :password %> <br/>
+	<%= f.label :login, "Login" %> <br/>
+	<%= f.text_field :login %> <br/>
+	<%= f.label :name, "Nickname / initals or student id" %> <br/>
+	<%= f.text_field :name %> <br/>
+	<%= f.collection_select(:group_id, Group.all, :id, :name, :prompt => 'Group') %><br/>
+	<%= f.submit "Send" %> 
+
+<% end %> 

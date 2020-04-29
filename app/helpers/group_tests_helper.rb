@@ -1,0 +1,2 @@
+module GroupTestsHelper
+end

@@ -10,7 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_24_111121) do
+ActiveRecord::Schema.define(version: 2020_04_28_064739) do
+
+  create_table "group_tests", force: :cascade do |t|
+    t.integer "test_id", null: false
+    t.integer "group_id", null: false
+    t.string "name"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["group_id"], name: "index_group_tests_on_group_id"
+    t.index ["test_id"], name: "index_group_tests_on_test_id"
+  end
 
   create_table "groups", force: :cascade do |t|
     t.string "name"
@@ -65,7 +75,6 @@ ActiveRecord::Schema.define(version: 2020_04_24_111121) do
     t.string "password"
     t.string "login"
     t.string "name"
-    t.string "group"
     t.integer "year"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -86,6 +95,8 @@ ActiveRecord::Schema.define(version: 2020_04_24_111121) do
     t.integer "teacher_id"
   end
 
+  add_foreign_key "group_tests", "groups"
+  add_foreign_key "group_tests", "tests"
   add_foreign_key "question_sets", "questions"
   add_foreign_key "question_sets", "tests"
   add_foreign_key "student_groups", "groups"

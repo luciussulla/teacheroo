@@ -1,16 +1,22 @@
 class QuestionSetsController < ApplicationController
-  before_action :set_question_set, only: [:show, :edit, :update, :destroy]
+  before_action :set_question_set, only: [:show, :delete, :destroy]
+  before_action :set_test, only: [:show, :delete, :destroy]
 
   def index
     unless QuestionSet.all.empty?
+      # index shows all questions sets regardless of owner
       @question_set = QuestionSet.all.order("created_at")
     end 
   end
 
   def show
+    @questions = @test.questions
   end
+#The functions below are not really going to be used 
+#All the action related to question_sets is going to happen in the 
+# tests controller apart from deleteing question sets
 
-
+=begin
   def new
     @questions = Question.all
     @question_set = QuestionSet.new
@@ -39,6 +45,7 @@ class QuestionSetsController < ApplicationController
     end 
     redirect_to :show
   end
+=end 
 
   def destroy
     if @question_set.destroy
@@ -56,6 +63,10 @@ class QuestionSetsController < ApplicationController
   end 
 
   def question_set_params
-    params.require(:question_set).permit(questions: [])
+    params.require(:question_set).permit(:test_id, :question_id)
   end
+
+  def set_test 
+    @test = Test.find(params[:test_id])
+  end 
 end

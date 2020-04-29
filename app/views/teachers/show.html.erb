@@ -1,11 +1,20 @@
 <h1>Teachers#show</h1>
 <p>Find me in app/views/teachers/show.html.erb</p>
 
+<h3>Teacher's nickname</h3>
 <%= @teacher.name %> 
 <br/>
+<h3>Teacher's tests: </h3>
+<ul>
 <% @teacher.tests.each do |test| %> 
-	<%= link_to "Test name: #{test.test_name}", teacher_test_path(@teacher, test) %> 
-	<br/>
+	<li><%= link_to "Test name: #{test.test_name}", teacher_test_path(@teacher, test)%></li>
 <% end %>
+</ul>
 <br/>
-<%= link_to "Create new test", new_teacher_test_path(@teacher.id) %> 
+
+
+<%= link_to "Create new test", new_teacher_test_path(@teacher.id) %>
+<h3>Teacher's groups </h3>
+<% @teacher.groups.each do |group| %> 
+	<li><%= link_to "Grop name: #{group.name}", group_path(group) %></li>
+<% end %>
