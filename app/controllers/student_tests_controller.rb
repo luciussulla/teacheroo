@@ -2,6 +2,7 @@ class StudentTestsController < ApplicationController
   before_action :set_student, only: [:new]
   before_action :set_test, only: [:new]
   before_action :student_test_params, only: [:create]
+  validates_uniqueness_of :student_id, scope: :test_id
 
   def index
   	# need to show all student's tests 
@@ -43,6 +44,8 @@ class StudentTestsController < ApplicationController
   end 
   
   def student_test_params
+    # If the argument of your param key is an array, you put curly branced in front of it. 
+    # If the argument of your param is a hash, you put square bracket in front of it. 
   	params.require(:student_test).permit(:student_id, :test_id, {answers: [answer: [:content, :question_id]]})
   end 
 
