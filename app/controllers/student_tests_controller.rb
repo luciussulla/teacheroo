@@ -2,7 +2,7 @@ class StudentTestsController < ApplicationController
   before_action :set_student, only: [:new]
   before_action :set_test, only: [:new]
   before_action :student_test_params, only: [:create]
-  validates_uniqueness_of :student_id, scope: :test_id
+
 
   def index
   	# need to show all student's tests 
@@ -27,6 +27,9 @@ class StudentTestsController < ApplicationController
     # implement a create student test function 
     #raise student_test_params.inspect
     StudentTest.create_student_test(student_test_params)
+    # redirect to student's show page 
+    
+    redirect_to root_path
   end 
 
   def show
