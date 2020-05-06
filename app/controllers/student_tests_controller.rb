@@ -19,16 +19,24 @@ class StudentTestsController < ApplicationController
     # and save as QuestionAnswer object
     # StudentTest is thus formed by many QuestionAnswer objects. 
     # @student_test = StudentTest.new(test_id: @test.id, student_id: @student.id)
-    # We need to extract both student and student_test ids from params 7
+    # We need to extract both student and student_test ids from params 
+
+    #!!!!! - this is for tomorrow !!!! 
+    #StudentTest.initialise_student_test(@student, @test)
+    # the initialise_student_test function is preparing the student_test id to be displayed in the new view 
+    # the student_test_id is then transported as hidden field to the create action where it can be used in 
+    # the creation of a new QuestionAnswer objects
+    # !!!!!!!!!!!!!!!!!!! 
+
     @test_questions = @test.questions 
   end 
 
   def create 
     # implement a create student test function 
     #raise student_test_params.inspect
-    StudentTest.create_student_test(student_test_params)
+    StudentTest.create_student_test(student_test_params) # This function should be changed to "complete_student_test"
     # redirect to student's show page 
-    
+
     redirect_to root_path
   end 
 
