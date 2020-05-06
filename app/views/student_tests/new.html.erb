@@ -1,18 +1,16 @@
 <h1> New Student's Test </h1>
 
-<%= form_for @student_test do |f| %>
-  
-  <%= f.label :test_name, "Give your test a name" %> 
-  <%= f.text_field :test_name %> 
-  <br/>
-  <br/>
-  <% @questions.each do |question| %> 
+<p><%= @test.test_name ? "Your test name is: #{@test.test_name}" : "Your test does not have a name" %><p>
 
-    <%= f.label :question, question.content %> 
-    <%= f.check_box(:questions, {:multiple => true, checked: false}, question.id, false) %> 
-    <br/>
+<%= form_for :student_test, url: "/build" do  |f| %>
+  <%= f.hidden_field :student_id, value: params[:student_id] %> 
+  <%= f.hidden_field :test_id, value: params[:test_id] %> 
 
+  <% @test_questions.each do |question| %> 
+      <p><%= label_tag :answer, question.content %></p>
+      <p><%= f.text_field "[answers][]answer[content]" %></p>
+      <p><%= f.hidden_field "[answers][]answer[question_id]",value: question.id %> </p>
+    <!-- <%= f.check_box(:questions, {:multiple => true, checked: false}, question.id, false) %> -->
   <% end %> 
-
   <%= f.submit "Submit" %> 
-<% end %> 
+<% end %>

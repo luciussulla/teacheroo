@@ -1,3 +1,28 @@
 <h1>Students#show</h1>
 <p>Find me in app/views/students/show.html.erb</p>
-<%= @student.inspect %> 
+
+<p>Student's name: <%= @student.name ? @student.name : "No name specified" %><p> 
+<p>Student's group: <%= @student.group ? @student.group.name : "No group specified" %><p>
+<p>Student's year: <%= @student.year ? @student.year : "No year specified" %> </p>
+
+<% unless @student.tests.blank? %> 
+	<p>Student's tests: </p>
+	<% @student.tests.each do |t| %> 
+	<!-- 
+		<p><%= t.test_name ? t.test_name : "Test" %> | <%= link_to "#{t.test_name ? t.test_name : 'Test'}", student_test_path(@student, t)%> </p>
+
+		get "studentstests/new/:student_id/test_id", to: "student_tests#new", as: :take_exam
+	-->	
+	
+	<p>Take the test: <%= link_to "Link to student's test", take_exam_path(student_id: @student.id, test_id: t.id) %></p>
+
+	<% end %>
+
+	<% else %> 
+	<p> Currently there are new tests </p>
+<% end %>
+
+
+
+
+

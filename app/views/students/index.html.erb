@@ -1,7 +1,7 @@
 <h1>Students#index</h1>
 <p>Find me in app/views/students/index.html.erb</p>
-
+<p>Currently there are 	<%= @students.count %> students in the system </p>
+<p>Click to see the student's profile page:<p>
 <% @students.each do |s| %> 
-	<%= s.name %> <br/>
-	<%= @students.count %> <br/>
+	 <p><%= link_to "#{s.name}", s %></p>
 <% end %>  

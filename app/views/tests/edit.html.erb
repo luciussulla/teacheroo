@@ -1,35 +1,11 @@
 
+<%= form_for [@teacher, @test] do |f| %>
+	<!-- there are several submit buttons in this form which go to different actions in controlle --> 
+	<!-- tests will be edited, link comes from the teachers show site -->
+	<!-- form also creates question sets in the test controller --> 
+	<%= render partial: "name_edit", locals: {f: f} %> 
+	<%= render partial: "assign", locals: {f: f} %> 
+	<%= render partial: "test_question_edit", locals: {f: f} %> 
+<% end %> 
 
-<div>
-	<%= form_for [@teacher, @test] do |f| %>
-	  <!-- new tests will be created from the teachers show site -->
-	  <p><%= f.label :test_name, "Give your test a name" %> </p>
-	  <p><%= f.text_field :test_name %> </p>
 
-	  <h2> You can add some new questions </h2>
-	  <% @new_questions.each do |new_question| %> 
-	  	<%= f.label :new_question, new_question.content %> 
-	  	<%= f.check_box(:new_questions, {multiple: true, checked: false}, new_question.id, false) %> 
-	  <% end %> 
-
-	  <br/>
-	  <%= f.submit "Submit" %> 
-	<% end %>  
-	<% if @new_questions.empty? %> 
-		<p>There are no more available questions to add to the test</p>
-		<p>Please add some new queations to be able to add them to the test</p>
-	<% end %> 
-		
-	<h3> You can delete some questions from you test</h3>
-	<% @questions.each do |q| %> 
-		<%= link_to "#{q.content}", remove_q_set_teacher_test_path(@teacher, @test, q_id: q.id) %> <br/>
-	<% end %> 
-	
-	<h3> You can edit the content of the questions</h3>
-	<p>Implement this feature later </p>
-
-	<h3>Assign the test to selected groups<h3>
-
-	#checkboxes with groups and 
-			
-<div>

@@ -8,5 +8,6 @@ class Test < ApplicationRecord
 
 	belongs_to :teacher
 
-	has_many :groups
+	has_many :group_tests
+	has_many :groups, through: :group_tests
 end

@@ -1,0 +1,4 @@
+<h3> You can delete some questions from your test</h3>
+<% @questions.each do |q| %> 
+	<%= link_to "#{q.content}", remove_q_set_teacher_test_path(@teacher, @test, q_id: q.id) %> <br/>
+<% end %> 	

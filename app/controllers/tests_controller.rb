@@ -1,12 +1,14 @@
 class TestsController < ApplicationController
   before_action :set_test, only: [:show, :edit, :update, :destroy, :remove_q_set]
-  before_action :set_teacher, only: [:show, :update, :edit, :new, :create, :show, :remove_q_set]
+  before_action :set_teacher, only: [:show, :update, :edit, :new, :create, :remove_q_set]
+  before_action :set_teacher_groups, only: [:edit, :update]
 
   def index
     @tests = Test.all
   end
 
   def show
+    @teacher = @test.teacher
   end
 
   def new
@@ -40,31 +42,67 @@ class TestsController < ApplicationController
   end
 
   def update
-    @test.update(test_name: params[:test][:test_name])
+    # if the proper form with 
+    # proper submit button sent the information in params[:commit] == 'Submit' 
+    # both the name will be edited and the new_questions_sets will be added
+    # if howere the button params[:commit] == Assign was pressed 
+    # that means the groups will be assigned test and the 
+    # from_assign? will be called 
+    test_id = @test.id 
+    teacher_id = @teacher.id
+    #@teachers_groups_with_test, @teachers_groups_without_test = GroupTest.teachers_groups_test(teacher_id, @test)   
 
-    new_questions_ids = params[:test][:new_questions]
+    if from_submit_button? 
+      print "\n inside update from submit button?\n"
+      @test.update(test_name: params[:test][:test_name])
+      new_questions_ids = params[:test][:new_questions]
+      if !new_questions_ids.blank?
+        if QuestionSet.create_new_set(new_questions_ids, test_id) 
+          flash[:notice] = "Updating completed"
+        else 
+          flash[:notice] = "Updating NOT completed"
+         end
+      end
+    end  
 
-    if QuestionSet.create_new_set(new_questions_ids, @test.id) 
-      flash[:notice] = "Updating completed"
-      else 
-       flash[:notice] = "Updating NOT completed"
-       render :edit
-    end 
-      redirect_to edit_teacher_test_path(@teacher, @test)
+    if from_assign_button?
+      print "\n inside update from assign button?\n"
+      #need to retrieve the group_ids 
+      #need to create the group_tests objects 
+      #need to save group_tests objects 
+      new_assigned_groups_ids = params[:test][:groups_ids]
+      # if !new_assigned_groups_ids.blank? 
+        GroupTest.reassign_groups_test(teacher_id, test_id, new_assigned_groups_ids)
+      # end  
+=begin
+      if !groups_ids.blank? 
+        if GroupTest.create_group_tests(groups_ids, test_id)
+          flash[:notice] = "Updating completed"
+        else 
+          flash[:notice] = "Updating NOT completed"
+         end
+      end 
+=end       
+    end
+
+    # regardless of which if block is called the redirect happens here
+    redirect_to edit_teacher_test_path(@teacher, @test)
   end
 
   def remove_q_set
+    # this is a custom route to delete custom q set 
+    # the link is in the edit view
+    # member is created in routes
     q_set_in_test = @test.question_sets.where(test_id: @test.id)
     q_set_array = q_set_in_test.where(question_id: params[:q_id])
 
     QuestionSet.destroy_those_q_sets(q_set_array)
     redirect_to edit_teacher_test_path(@teacher, @test)
-  #    redirect_to teacher_question_sets_path(@teacher)
-  end 
-
-  def delete 
-    @questions = @test.questions
-    # QuestionSet.delete_questions_from_set(params[:test][:questions])
+    #  redirect_to teacher_question_sets_path(@teacher)
+    # form for this will be created in the edit and will 
+    # require special private function to identify the 
+    # params from form that come into this function 
+    # it is presented here how it's fone: 
   end 
 
   def destroy
@@ -76,22 +114,34 @@ class TestsController < ApplicationController
     redirect_to :index
   end
 
-  private 
-
+  private #############################################
+  
   def set_test
     @test = Test.find(params[:id])
   end 
 
-=begin
-  # For now, were are not really doing any mass_assignment in this controller
-  # the function below is not currently being used.  
-  def test_params
-    params.require(:test).permit(:test_name, questions: [])
-  end
-=end 
-
   def set_teacher 
-  	@teacher = Teacher.find(params[:teacher_id])
+  	@teacher = set_test.teacher
   	#print  "Inside set_teacher. params[:teacher_id] is #{params[:teacher_id]}"
+  end 
+
+  def set_teacher_groups
+    @teacher = set_teacher
+    @teacher_groups = @teacher.groups
+  end 
+
+  # set_teacher_group calls set_teacher which calls set_teacher, so all functions are related. 
+  # because in the params we do not have params[:teacher_id]
+  
+  def from_submit_button? 
+    print "\n indide from submit button private function \n"
+    print "\n from_submit_button will have the value of #{params[:commit] == 'Submit'}"
+    params[:commit] == "Submit"
+  end 
+
+  def from_assign_button? 
+    print "\n indide from assign button private function \n"
+    print "\n from_assign_button will have the value of #{params[:commit] == 'Assign'}"
+    params[:commit] == "Assign"
   end 
 end

@@ -1,0 +1,16 @@
+
+ <% if !@teacher_groups.blank? %>
+  <p>Your test called '<%= @test.test_name %>' is assigned to the following groups:<p>
+  <ul>
+  <% @teacher_groups.each do |group| %>
+  	<% true_false = group.has_test?(@test) %> 
+  	<p>
+  		<%= f.label :groups_ids, "#{group.name}" %>
+  		<%= f.check_box :groups_ids, {multiple: true, checked: true_false}, group.id, false %>
+  	</p> 
+  <% end %>
+	</ul>
+<% end %> 	
+<%= f.submit "Assign" %> 
+
+

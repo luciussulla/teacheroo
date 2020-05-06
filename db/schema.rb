@@ -10,7 +10,13 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_04_28_064739) do
+ActiveRecord::Schema.define(version: 2020_05_02_163503) do
+
+  create_table "answers", force: :cascade do |t|
+    t.string "content"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
 
   create_table "group_tests", force: :cascade do |t|
     t.integer "test_id", null: false
@@ -27,6 +33,17 @@ ActiveRecord::Schema.define(version: 2020_04_28_064739) do
     t.integer "teacher_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "question_answers", force: :cascade do |t|
+    t.integer "question_id", null: false
+    t.integer "answer_id", null: false
+    t.integer "student_test_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["answer_id"], name: "index_question_answers_on_answer_id"
+    t.index ["question_id"], name: "index_question_answers_on_question_id"
+    t.index ["student_test_id"], name: "index_question_answers_on_student_test_id"
   end
 
   create_table "question_sets", force: :cascade do |t|
@@ -97,6 +114,9 @@ ActiveRecord::Schema.define(version: 2020_04_28_064739) do
 
   add_foreign_key "group_tests", "groups"
   add_foreign_key "group_tests", "tests"
+  add_foreign_key "question_answers", "answers"
+  add_foreign_key "question_answers", "questions"
+  add_foreign_key "question_answers", "student_tests"
   add_foreign_key "question_sets", "questions"
   add_foreign_key "question_sets", "tests"
   add_foreign_key "student_groups", "groups"

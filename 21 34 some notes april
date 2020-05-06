@@ -1,0 +1,131 @@
+class GroupTest < ApplicationRecord
+  belongs_to :test
+  belongs_to :group
+
+  def self.create_group_tests(group_ids, test_id)
+  	print "\n Inside the create_group_tests function \n"
+		group_ids.each do |g_id|
+			GroupTest.create(group_id: g_id, test_id: test_id)
+			print "\n Group test created \n"
+		end 
+  end 
+
+  def self.teachers_groups_test(teacher_id, test)
+  	print "\n inside teachers_groups_with_test, teacher id is #{teacher_id}, test.id is #{test.id} \n"
+
+    all_teachers_groups = Group.where(teacher_id: teacher_id)
+   	print "\n all_teachers_groups are: #{all_teachers_groups.inspect} \n"
+
+    groups_with_tests = []
+    grpups_without_test = []
+
+    all_teachers_groups.each do |tg| 
+    	 tg.tests.blank? ?  groups_without_test.push(tg) : groups_with_test.push(tg)
+    end 
+    #teachers_groups_with_test = all_teachers_groups - test.groups 
+    [groups_with_test, groups_without_test]
+  end 
+
+  def self.reassign_groups_test(teacher_id, test_id, new_assigned_groups_ids)
+  	print "\n inside teachers_groups_with_test, teacher id is #{teacher_id}, test.id is #{test_id} \n"
+  	# We have to delete all previuos entires from group_test related to this test all al groyp that have it
+    all_teachers_groups = Group.where(teacher_id: teacher_id)
+
+   	print "\n all_teachers_groups are: #{all_teachers_groups.inspect} \n"
+
+   	# The section below should be refactored like: 
+  	# group_test = GroupTest.where(test_id: test_id)
+  	# GroupTest.destroy_all unless group_test.blank?
+
+  	unless GroupTest.where(test_id: test_id).blank?
+  		unless all_teachers_groups.blank? || new_assigned_groups_ids.blank? 
+		  	all_teachers_groups.each do |group| 
+		  		print "\n inside all teacher_group loop group_id is #{group.id} \n"
+		  		#retried the group_test with g_id and tes_id 
+		  		#destroy that group_test relation 
+		  		#repeat both above steps for every g_id 
+		  		group_test = GroupTest.where(group_id: group.id, test_id: test_id).first
+		  		print "\n group_test is #{group_test.inspect} \n"
+		  	  GroupTest.destroy(group_test.id) if !group_test.blank?
+		  	  print "\n destroyoed groyp test with group_id: #{group.id} and test_id: #{test_id} \n"
+		  	end 
+		  	print "now after destorying the previous relationships the reassignment needs to happen"
+
+				new_assigned_groups_ids.each do |g_id| 
+					GroupTest.create(group_id: g_id, test_id: test_id)
+					print "\n created group_test with id of #{g_id} and test_id of #{test_id}\n\n"
+				end
+				
+		  else
+			 print "\n\n either all_teachers_groups or new_assigned_groups_is were blank so test reassignment process to groups did not run \n\n" 	
+	 	  end 	
+	  end  
+	end   
+end
+
+
+
+<!-- 
+		<% if @new_questions.empty? %> 
+			<p>There are no more available questions to add to the test</p>
+			<p>Please create some new queations to be able to add them to the test</p>
+	  <% elsif %> 
+	  	<h2> You can add some new questions </h2>
+		  <% @new_questions.each do |new_question| %> 
+		  	<%= f.label :new_questions, new_question.content %>
+		  	<%= f.check_box(:new_questions, {multiple: true, checked: false}, new_question.id, false) %> 
+		  <% end %> 
+		<% end %> 
+	  <%= f.submit "Submit" %> 
+
+	  <% if !@teacher_groups.blank? %>
+		  <p>Your groups have the following tests<p>
+		  <ul>
+		  <% @teacher_groups do |group| %>
+		  	true_false = group.has_test?(@test)  sprawdza, czy grupa ma ten test i odpowiednio formatuje checkbox albo pustym albo pelnym krzyzykiem 
+		  	<p>group.name</p>
+		  	<%= f.label :groups_ids, "#{group.name}" %> 
+		  	<%= f.check_box :groups_ids, {multiple: true, checked: true_false}, group.id, false %> 
+		  <% end %>
+			</ul>
+		<% end %> 	
+		<%= f.submit "Assign" %> 
+
+
+<% end %> 
+
+		1. We need to loop over all the teachers groups 
+		and mark with a checkbox all those that have the test
+		and with an unmarked checkbox all thos that do not have the test
+		Submitting will send the groups_ids array to which the test should not be assigned 
+
+		2. The problem is to create a function that will delete all previous entries from the 
+		GroupTest table that have associations to those groups and that test. 
+		The function can be called 'reassign_grop_tests_' - it will delete all group_test entries that 
+		- have that test's ids and those @teacher.groups's ids 
+		- there will be some iteration in that function 
+
+		<% unless @teachers_groups_with_test.blank? %> 
+			<h3>Assign the test to selected groups</h3>
+			<p>You have already assigned your test to these groups:</p>
+			<ul>
+			<% @teachers_groups_with_test.each do |g| %> 
+				<li><%= g.name %></li>
+			<% end %> 
+			</ul>
+		<% end %>
+
+		<% if !@teachers_groups_without_test.blank? %> 
+			<p>You can assign the test to the groups below:</p>
+			 Below list only the teacher's groups to which you have not assigned it yet 
+			<% @teachers_groups_without_test.each do |g| %> 
+				<%= f.label :groups_ids, "#{g.name}" %> <br/>
+				<%= f.check_box(:groups_ids, {multiple: true, checked: false}, g.id, false) %> <br/>
+			<% end %> 
+			<%= f.submit "Assign" %> 
+		<% else %>
+			<p>You have assigned the test to all groups</p>
+		<% end %> 	
+
+	<% end %> 
+--> 

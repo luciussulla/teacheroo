@@ -1,5 +1,8 @@
 class Group < ApplicationRecord
 	has_many :students
+	has_many :group_tests
+	has_many :tests, through: :group_tests
+	
 	# FOR NOW THE 	belongs_to :teacher is not added so groups can 
 	# be created independently of belonging or not belonging to a teacher
 
@@ -11,5 +14,14 @@ class Group < ApplicationRecord
 			student = Student.find(student_id.to_i)
 			student.group_id = group_id.to_i
 		end 
+	end 
+
+	def has_test?(test)
+		status = GroupTest.where(group_id: self.id, test_id: test.id)
+		if !status.blank? || !status == nil 
+			return true 
+		else 
+			return false 
+		end 		
 	end 
 end
