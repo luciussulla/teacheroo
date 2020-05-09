@@ -1,7 +1,10 @@
 class Group < ApplicationRecord
 	has_many :students
+	validates_uniqueness_of :student_id
 	has_many :group_tests
 	has_many :tests, through: :group_tests
+
+	#belongs_to :teacher
 	
 	# FOR NOW THE 	belongs_to :teacher is not added so groups can 
 	# be created independently of belonging or not belonging to a teacher
@@ -13,6 +16,8 @@ class Group < ApplicationRecord
 		students_ids.each do |student_id| 
 			student = Student.find(student_id.to_i)
 			student.group_id = group_id.to_i
+			student.save
+			print "\n Student was created \n"
 		end 
 	end 
 

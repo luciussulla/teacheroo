@@ -7,6 +7,7 @@ class GroupsController < ApplicationController
   end
 
   def show
+    @group_students = @group.students 
   end
 
   def new
@@ -19,14 +20,13 @@ class GroupsController < ApplicationController
     @group = Group.new(name: params[:group][:name])
 
     if @group.save 
-      flash[:notice] = "Group created"
+      flash[:notice] = "\nGroup created"
       print "\n Group was created"
     else 
-      flash[:notice] = "Group not created"
+      flash[:notice] = "\nGroup not created"
       print "\n Group was NOT created"
     end 
 
-    print "\n Group name is #{@group.name}"
     students_ids = params[:group][:students]
     print "\n inside create action student_ids are #{students_ids} \n"
     Group.add_students_to_group(@group, students_ids)
@@ -35,31 +35,33 @@ class GroupsController < ApplicationController
   end
 
   def edit
+    # The edit function so far does not add the possibility to delete students from group. 
+    @students = Student.all - @group.students
   end
 
   def update
+
+    if @group.update_attribute(:name, params[:group][:name])
+      flash[:notice] = "Group updated\n"
+      print "\n Group was updated\n"
+    else 
+      flash[:notice] = "\nGroup not updated\n"
+      print "\n Group was NOT updated\n"
+    end 
+    students_ids = params[:group][:students]
+    print "\n inside create action student_ids are #{students_ids} \n"
+
+    Group.add_students_to_group(@group, students_ids)
+
+    redirect_to @group
   end
 
   def destroy
   end
 
+  private
   def set_group 
     @group = Group.find(params[:id])
-  end 
-
-  def group_params
-=begin  
-
-    pars = params.require(:group).permit(:name, students: [])
-    p_hash = {}
-    p_hash[:name] = pars[:name]
-    p_hash[:students] = pars[:students].collect(&:to_i)
-    print "\n p_hash: #{p_hash}"
-    p_hash
-    print "\n pname #{pname}\n "
-    print "\n pstudents #{pstudents}\n"
-    pars = pname.merge(pstudents)
-    print "\n pars studetns #{pars} \n" 
-=end    
-  end 
+  end  
+  
 end

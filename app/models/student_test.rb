@@ -4,13 +4,21 @@ class StudentTest < ApplicationRecord
   has_many :question_answers
   has_many :answers, through: :question_answers
   validates_uniqueness_of :student_id, scope: :test_id
-
-  # This is for tomorrow 
-  # def self.initialize_student_test(student, test)
-    # this function is run in the new action, to prepare the student_test. 
-  #end
+  
+  # def measure_time 
+        # student_test.created_at - @student_test.completed_at 
+        # since student_test is already created when student solves the test 
+        # completed_at in the @student_test can be touched when student submits the solved test
+        # @student_test will have both the completion time and the creation time so 
+        # additionally we can run a java script timer on the front page 
+  # end 
 
   def self.join_student_and_test(test_id, student_id)
+    # This function needs to be called in the new action 
+    # then the @new_student_test's id needs to be passed as hidden in params to create_student_test function
+    # params need to be changed from what they are now 
+    # instead of passing student_id and test_id to the params in create function we just pass the 
+    # student_test_id - that's all we need to create new QuestionAnswer obejcts 
     student_test = StudentTest.new(test_id: test_id, student_id: student_id)
     if student_test.save  
       print "\nStudentTest has been created\n" 
@@ -20,32 +28,27 @@ class StudentTest < ApplicationRecord
     student_test
   end 
 
-  def self.save_answer_add_question_answer(answer, student_test_id, question_id) 
+  def self.save_answer_create_question_answer(answer, student_test_id, question_id) 
     if answer.save 
-        #raise answer.inspect
         print "\nAnswer has been created\n"
-        # here we join the answer_id, question_id and the student_test_id in a new question_anwer object
-        # this should be done by separate function 
         question_answer = QuestionAnswer.new(student_test_id: student_test_id, question_id: question_id, answer_id: answer.id)
         if question_answer.save
           print "\nQuestionAnswer was created\n"
         else 
           print "\nQuestionAnswer not created\n"
         end   
-      else 
+    else 
         print "\nAnswer has not been created\n"
-      end   
+    end   
   end 
 
-  def self.create_new_question_answers(student_test, answers_array)
-    student_test_id = student_test.id
-
+  def self.build_new_question_answers(student_test_id, answers_array)
     answers_array.each do |answer_hash| 
       answer_content = answer_hash["answer"]["content"]
       question_id = answer_hash["answer"]["question_id"]
       answer = Answer.new(content: answer_content)
       
-      save_answer_add_question_answer(answer, student_test_id, question_id)  
+      save_answer_create_question_answer(answer, student_test_id, question_id)  
     end
   end 
 
@@ -66,13 +69,13 @@ class StudentTest < ApplicationRecord
     #	{"answer"=>{"content"=>"c", "question_id"=>"3"}}
    	# ]
    	#}
-    test_id = student_test_params[:test_id] 
-    student_id = student_test_params[:student_id]
-
-    student_test = join_student_and_test(test_id, student_id)
+    # test_id = student_test_params[:test_id] 
+    # student_id = student_test_params[:student_id]
+    # student_test = join_student_and_test(test_id, student_id)
   	answers_array = student_test_params[:answers]
+    student_test_id = student_test_params[:student_test_id]
 
-    create_new_question_answers(student_test, answers_array)
+    build_new_question_answers(student_test_id, answers_array)
   end 
 
 =begin  

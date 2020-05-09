@@ -30,9 +30,12 @@ class GroupTest < ApplicationRecord
   def self.reassign_groups_test(teacher_id, test_id, new_assigned_groups_ids)
   	@test = Test.find(test_id)
   	print "\n inside teachers_groups_with_test, teacher id is #{teacher_id}, test.id is #{test_id} \n"
-  	# We have to delete all previuos entires from group_test related to this test all al groyp that have it
+  	# We have to delete all previuos entires from group_test related to this test and all groyp that have it
     all_teachers_groups = Group.where(teacher_id: teacher_id)
-    
+    # Test belongs to just one teacher, so deleteing GroupTest entires by test_id will delete the right 
+    # group_test objects 
+    # passing teachet_id to this function is thus uncecessary and this function need refactoring. 
+
   	print "\n\n Is the group test array for this test false or not: #{GroupTest.where(test_id: test_id).blank?} \n \n" 
   	GroupTest.where(test_id: test_id).destroy_all 
 
@@ -53,8 +56,7 @@ class GroupTest < ApplicationRecord
 	  end	
 =end	  
   	print "now after destorying the previous relationships the reassignment needs to happen"
-
-
+    # new GroupTest objects are created here: 
     unless new_assigned_groups_ids.blank?
 	 		selected_groups = Group.find(new_assigned_groups_ids)
 			@test.update(groups: selected_groups) unless new_assigned_groups_ids.blank?

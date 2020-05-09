@@ -76,7 +76,7 @@ class TestsController < ApplicationController
       # end  
 =begin
       if !groups_ids.blank? 
-        if GroupTest.create_group_tests(groups_ids, test_id)
+        if GroupTest.create_group_tests(groups_ids, test_id)+/
           flash[:notice] = "Updating completed"
         else 
           flash[:notice] = "Updating NOT completed"

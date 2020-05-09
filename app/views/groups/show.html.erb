@@ -1,5 +1,17 @@
-<h1>Groups#show</h1>
-<p>Find me in app/views/groups/show.html.erb</p>
+<h1>Group information</h1>
+
 <p>Group's name is </p>
 <%= @group.name %> <br/>
-<%= @group.students.inspect %>
+
+<% unless @group.students.blank? %> 
+	<p>Student's in this group are:</p>
+	<ul>
+	<% @group.students.each do |student| %> 
+		<li><%= link_to "#{student.name if student.name}", student_path(student) %> 
+	<% end %> 
+	</ul>
+<% else %> 
+	<p>This group called '<%= @group.name if @group.name %>' has no students'</p>
+<% end %> 
+
+<p>Edit this group to assign students or change it's name: <%= link_to 'Edit', edit_group_path(@group) %> 

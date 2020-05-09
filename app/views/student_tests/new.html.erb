@@ -1,10 +1,10 @@
 <h1> New Student's Test </h1>
-
+<p>NEW STUDENT TEST ID: <%= @new_student_test.id %> </p>
 <p><%= @test.test_name ? "Your test name is: #{@test.test_name}" : "Your test does not have a name" %><p>
 
 <%= form_for :student_test, url: "/build" do  |f| %>
-  <%= f.hidden_field :student_id, value: params[:student_id] %> 
-  <%= f.hidden_field :test_id, value: params[:test_id] %> 
+
+  <%= f.hidden_field :student_test_id, value: @new_student_test.id %> 
 
   <% @test_questions.each do |question| %> 
       <p><%= label_tag :answer, question.content %></p>

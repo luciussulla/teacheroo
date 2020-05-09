@@ -20,7 +20,7 @@
      <li>Correct answer: <%= q.correct_answer %></li>
 <% end %> 
 </ul>
-<p>You can edit the test here: </p>
-Assign the test to the following groups: 
-<!-- we can make a dropdown list of groups and students --> 
 
+<p>If you want to assign the test to particular groups 
+<%= link_to "click here", edit_teacher_test_path(@teacher, @test) %> 
+</p>

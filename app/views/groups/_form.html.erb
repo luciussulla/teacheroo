@@ -1,0 +1,13 @@
+
+<%= form_for @group do |f| %> 
+	<%= f.label :name, "Group Name" %> <br/>
+	<%= f.text_field :name %><br/> 
+	<p>Which students do you want in your group?</p>
+	<p>Put a checkbox to add students</p>
+	<% @students.each do |student| %> 
+		<%= f.label :students, student.name %> 
+		<%= f.check_box :students, {multiple: true, checked: false}, student.id, false %><br/>
+	<% end %> 
+	<br/>
+	<%= f.submit "Submit" %> 	
+<% end %>
