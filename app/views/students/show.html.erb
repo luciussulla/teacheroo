@@ -5,27 +5,12 @@
 <p>Student's group: <%= @student.group ? @student.group.name : "No group specified" %><p>
 <p>Student's year: <%= @student.year ? @student.year : "No year specified" %> </p>
 
-<% unless @student.tests.blank? %> 
+<% unless @student.group.tests.blank? %> 
 	<p>Student's tests: </p>
-	<% @student.tests.each do |test| %> 
-
-	<p> Test id is: <%= test.id %> </p>
-	<!-- 
-		<p><%= t.test_name ? t.test_name : "Test" %> | <%= link_to "#{t.test_name ? t.test_name : 'Test'}", student_test_path(@student, t)%> </p>
-
-		get "studentstests/new/:student_id/test_id", to: "student_tests#new", as: :take_exam
-	
-		# student has taken the test if the taken_at column is filled with the date
-		
-		We should only show tests here that studnet has not yet taken. 
-		To do this we check if the student_test does not
-
-
-
-		-->	
+	<% @student.group.tests.each do |test| %> 
+		<p> Test id is: <%= test.id %> </p>
 		<p>Take the test: <%= link_to "Link to student's test", take_exam_student_test_path(@student, test) %></p>
 	<% end %>
-
 	<% else %> 
 	<p> Currently there are no new tests </p>
 <% end %>

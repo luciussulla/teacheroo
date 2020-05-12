@@ -1,23 +1,8 @@
 class StudentTestsController < ApplicationController
-  before_action :set_student, only: [:new, :show]
-  before_action :set_test, only: [:new, :show]
-  # Those two need to be separate, cause params and routes are different to set_student / set_test
-  #before_action :set_show_student, only: [:show]
-  #before_action :set_show_test, only: [:show]
-  before_action :student_test_params, only: [:create] # this before is not neccessary - delete it later
+  before_action :set_student, only: [:new, :show, :results]
+  before_action :set_test, only: [:new, :show, :results]
 
-  # the route to :new and :create actions for this controller are:
-  # get "studentstests/new/:student_id/:test_id", to: "student_tests#new", as: :take_exam 
-  # post "/build", to: "student_tests#create"
-  def index
-  	# need to show all student's tests 
-  	#@student_tests = StudentTest.find(student_id: @student.id)
-  end
-
-  def new  
-    # route to :new is:
-    # get "studentstests/new/:student_id/:test_id", to: "student_tests#new", as: :take_exam 
-    # params permitted are {:student_id, :test_id}
+  def new   
     # Question object has_many --> QuestionSet object --> Test object has_one --> StudentTest has_many ---> QuestionAnswer belongs to-> Answer
     # A test completed by a student is composed by StudentTest object that has_many QuestionAnswer objects.
     # In the new action we iterate through @test.questions
@@ -28,43 +13,34 @@ class StudentTestsController < ApplicationController
     # StudentTest is thus formed by many QuestionAnswer objects. 
     # @student_test = StudentTest.new(test_id: @test.id, student_id: @student.id)
     # @question_answer = QuestionAnswer.new(test_id: @test.id, student_id: @student.id, studetnt_test_is: @student_test.id)
-    # We need to extract both student and student_test ids from params 
-
-    test_id = @test.id 
-    student_id = @student.id
-    @new_student_test = StudentTest.join_student_and_test(test_id, student_id)
+    # We need to extract both student test and student_test ids from params 
+    @new_student_test = StudentTest::SolveTest.join_student_and_test(@test, @student)
     @test_questions = @test.questions 
   end 
 
   def create 
-    # we are retireving the id of the newly creates StudentTest without questionanswer object 
-    # to be able to redirect to the student_test_path (show action) after the new test with question_answer objects 
-    # is created.
-    @student_test_without_question_answers = StudentTest.find(student_test_params[:student_test_id])
-    @student = @student_test_without_question_answers.student
-    @test = @student_test_without_question_answers.test 
-    # create_student_test class method joins the student test with question_answer obeject is the question_naswer table
-    # which storest student_test_id, question_id and answer_id (answers are also created inside the function)
-    StudentTest.create_student_test(student_test_params) # This function should be changed to "complete_student_test"
-    # redirect to student's show page 
-    redirect_to show_completed_test_path(@student.id, @test.id)
+    @student_test = StudentTest.find(student_test_params[:student_test_id]) # comes from the new action
+    @student = @student_test.student 
+    @test = @student_test.test 
+    # .create_student_test joins the student test with question_answer obejects by storing student_test_id, question_id and answer_id 
+    # answers are created inside the function
+    StudentTest::SolveTest.fill_in_student_test(student_test_params) # This function should be changed to "fill_in_student_test"
+    redirect_to action: :results, student_id: @student.id, id: @test.id
   end 
 
-  def show
-  	# show one particular studetn's test 
-    # @student_test_without_question_answers is an ARRAY - must apply first
-  	@student_test_without_question_answers = StudentTest.where(student_id: @student.id, test_id: @test.id).first
-    # now we find all the question_answers associated with particular user test
-    @question_answers = @student_test_without_question_answers.question_answers
-  end
+  def results
+    @test_with_question_answers = StudentTest.where(student_id: @student.id, test_id: @test.id).first
+    @question_answers = @test_with_question_answers.question_answers
+    @test_results = StudentTest::CheckTest.check(@test_with_question_answers, @question_answers)
+  end 
 
-  private 
+  private   
   def set_student 
   	@student = Student.find(params[:student_id])
   end 	
 
   def set_test 
-    @test = Test.find(params[:test_id])
+    @test = Test.find(params[:id])
   end 
 
   def student_test_params
@@ -72,5 +48,4 @@ class StudentTestsController < ApplicationController
     # If the argument of your param is a hash, you put square bracket in front of it. 
   	params.require(:student_test).permit(:student_id, :test_id, :student_test_id, {answers: [answer: [:content, :question_id]]})
   end 
-
 end

@@ -105,6 +105,19 @@ class TestsController < ApplicationController
     # it is presented here how it's fone: 
   end 
 
+  def take_test 
+    # we need the copy of the functionality from the student_test controller and model. 
+      @test_questions = @test.questions 
+  end 
+
+  def save_completed_test
+    # we copy the create part from students_test controller 
+  end 
+
+  def show_results
+
+  end 
+
   def destroy
     if @test.destroy
       flash[:notice] = "Destroying completed"

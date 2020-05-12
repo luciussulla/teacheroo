@@ -5,92 +5,119 @@ class StudentTest < ApplicationRecord
   has_many :answers, through: :question_answers
   validates_uniqueness_of :student_id, scope: :test_id
   
-  # def measure_time 
-        # student_test.created_at - @student_test.completed_at 
-        # since student_test is already created when student solves the test 
-        # completed_at in the @student_test can be touched when student submits the solved test
-        # @student_test will have both the completion time and the creation time so 
-        # additionally we can run a java script timer on the front page 
-  # end 
+  module SolveTest
+    def self.join_student_and_test(test, student)
+      # This function needs to be called in the new action 
+      # then the @new_student_test's id needs to be passed as hidden in params to create_student_test function
+      # params need to be changed from what they are now 
+      # instead of passing student_id and test_id to the params in create function we just pass the 
+      # student_test_id - that's all we need to create new QuestionAnswer obejcts 
+      student_test = StudentTest.new(test_id: test.id, student_id: student.id)
+      if student_test.save  
+        print "\nStudentTest has been created\n" 
+      else 
+        print "\nA student_test has not been created\n"
+      end
+      student_test
+    end 
 
-  def self.join_student_and_test(test_id, student_id)
-    # This function needs to be called in the new action 
-    # then the @new_student_test's id needs to be passed as hidden in params to create_student_test function
-    # params need to be changed from what they are now 
-    # instead of passing student_id and test_id to the params in create function we just pass the 
-    # student_test_id - that's all we need to create new QuestionAnswer obejcts 
-    student_test = StudentTest.new(test_id: test_id, student_id: student_id)
-    if student_test.save  
-      print "\nStudentTest has been created\n" 
-    else 
-      print "\nA student_test has not been created\n"
-    end
-    student_test
+    def self.save_answer_create_question_answer(answer, student_test_id, question_id) 
+      if answer.save 
+          print "\nAnswer has been created\n"
+          question_answer = QuestionAnswer.new(student_test_id: student_test_id, question_id: question_id, answer_id: answer.id)
+          if question_answer.save
+            print "\nQuestionAnswer was created\n"
+          else 
+            print "\nQuestionAnswer not created\n"
+          end   
+      else 
+          print "\nAnswer has not been created\n"
+      end   
+    end 
+
+    def self.build_new_question_answers(student_test_id, answers_array)
+      answers_array.each do |answer_hash| 
+        answer_content = answer_hash["answer"]["content"]
+        question_id = answer_hash["answer"]["question_id"]
+        answer = Answer.new(content: answer_content)
+        
+        save_answer_create_question_answer(answer, student_test_id, question_id)  
+      end
+    end 
+
+    def self.fill_in_student_test(student_test_params)
+    	# There is no single CompletedTest object! 
+    	# A completed test is a StudentTest object that has_many QuestionAnswer objects
+    	# Creating a completed test requires student_id and test_id as well as the answer ids
+    	# First we create the StudentTest object 
+    	# Then we create the Answer objects, from the answers provided by students 
+    	# Thirdly we can finally create the QuestionAnswer objects with a link to StudentTest object
+    	#
+      # student_test_params look like this: 
+  	  #{"student_id"=>"1",
+      # "test_id"=>"26",
+      # "answers"=>[
+      #	{"answer"=>{"content"=>"a", "question_id"=>"1"}}, 
+      #	{"answer"=>{"content"=>"b", "question_id"=>"2"}},
+      #	{"answer"=>{"content"=>"c", "question_id"=>"3"}}
+     	# ]
+     	#}
+    	answers_array = student_test_params[:answers]
+      student_test_id = student_test_params[:student_test_id]
+      build_new_question_answers(student_test_id, answers_array)
+    end 
   end 
 
-  def self.save_answer_create_question_answer(answer, student_test_id, question_id) 
-    if answer.save 
-        print "\nAnswer has been created\n"
-        question_answer = QuestionAnswer.new(student_test_id: student_test_id, question_id: question_id, answer_id: answer.id)
-        if question_answer.save
-          print "\nQuestionAnswer was created\n"
+  module CheckTest 
+    def self.check(test, question_answers_array)
+      number_of_questions = question_answers_array.length
+      points = 0
+
+      question_answers_array.each do |qa|
+        correct_answer = Question.find(qa.question_id).correct_answer
+        student_answer = Answer.find(qa.answer_id).content
+        if correct_answer == student_answer 
+          points += 1
+        end 
+      end 
+
+      score = (points.to_f / number_of_questions.to_f).round(2)
+      print "\n#{points}\n"
+      print "\n#{score}\n"
+  
+      case score
+        when score <= 60
+          test.grade = 2
+        when score <= 71
+          test.grade = 3
+        when score <= 76
+          test.grade = 3.5.to_f
+        when score <= 86
+          test.grade = 4
+        when score <= 91
+          test.grade = 4.5.to_f
         else 
-          print "\nQuestionAnswer not created\n"
-        end   
-    else 
-        print "\nAnswer has not been created\n"
-    end   
-  end 
-
-  def self.build_new_question_answers(student_test_id, answers_array)
-    answers_array.each do |answer_hash| 
-      answer_content = answer_hash["answer"]["content"]
-      question_id = answer_hash["answer"]["question_id"]
-      answer = Answer.new(content: answer_content)
+          test.grade = 5
+      end 
       
-      save_answer_create_question_answer(answer, student_test_id, question_id)  
+      results_hash = {percentage: score, grade: test.grade, points: points}
     end
   end 
+=begin
+    t.integer "question_id", null: false
+    t.integer "answer_id", null: false
+    t.integer "student_test_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
 
-  def self.create_student_test(student_test_params)
-  	# There is no single CompletedTest object! 
-  	# A completed test is a StudentTest object that has_many QuestionAnswer objects
-  	# Creating a completed test requires student_id and test_id as well as the answer ids
-  	# First we create the StudentTest object 
-  	# Then we create the Answer objects, from the answers provided by students 
-  	# Thirdly we can finally create the QuestionAnswer objects with a link to StudentTest object
-  	#
-    # student_test_params look like this: 
-	  #{"student_id"=>"1",
-    # "test_id"=>"26",
-    # "answers"=>[
-    #	{"answer"=>{"content"=>"a", "question_id"=>"1"}}, 
-    #	{"answer"=>{"content"=>"b", "question_id"=>"2"}},
-    #	{"answer"=>{"content"=>"c", "question_id"=>"3"}}
-   	# ]
-   	#}
-    # test_id = student_test_params[:test_id] 
-    # student_id = student_test_params[:student_id]
-    # student_test = join_student_and_test(test_id, student_id)
-  	answers_array = student_test_params[:answers]
-    student_test_id = student_test_params[:student_test_id]
-
-    build_new_question_answers(student_test_id, answers_array)
-  end 
-
-=begin  
-  accepts_nested_attributes_for :answers
-
-  def answer=(answer)
-  	@answer = answer
-  end
-
-  def question_id=(question_id)
-  	@question_id = question_id
-  end 
-
-  def content=(content)
-  	@content = content
-  end 
-=end 
+    # test is where we write the:
+    t.integer "test_id", null: false
+    t.integer "student_id", null: false
+    t.integer "grade"
+    t.integer "time_taken"
+    t.datetime "taken_at"
+    t.string "remarks"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+=end
 end

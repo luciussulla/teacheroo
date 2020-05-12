@@ -1,0 +1,28 @@
+<h1>These are your test results</h1>
+
+<p>Student id is:  <%= @student.id %></p>
+<p>Test id is: 	   <%= @test.id %></p>
+<p>StudentTest id is: <%= @test_with_question_answers.id %></p>
+<!-- Later we need to iterate over student's answers and questions and preferably also check if 
+	they are correct and also maybe show the time the student took to solve the test --> 
+<br/>
+
+<div class="results">
+	<p>You answered corretly to <%= %> out of <%= @test_results[:points]%>questions</p>
+	<p> Your score is:<%= @test_results[:percentage]%>%</p>
+	<p>Your grade is:<%= @test_results[:grade] %></p>
+</div>
+<br/>
+<p>Student's answers are:</p>
+ <% @question_answers.each do |qa| %>
+	<% q = Question.find(qa.question_id)%>
+ 	<p>Question: <%= q.content %> </p>
+ 	<p>Option 1: <%= q.option1 %> </p>
+ 	<p>Option 2: <%= q.option2 %> </p>
+ 	<p>Option 3: <%= q.option3 %> </p>
+ 	<p>Option 4: <%= q.option4 %> </p>
+ 	<br/>
+ 	<p>Student's Answer: <%= Answer.find(qa.answer_id).content %><p>
+ 	<p>Correct Answer: <%= q.correct_answer %></p>
+ 	<br/>
+ <% end %> 
