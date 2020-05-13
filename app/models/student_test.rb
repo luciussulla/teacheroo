@@ -71,36 +71,41 @@ class StudentTest < ApplicationRecord
   module CheckTest 
     def self.check(test, question_answers_array)
       number_of_questions = question_answers_array.length
+      print "\n number of questions is #{number_of_questions} \n"
       points = 0
 
       question_answers_array.each do |qa|
         correct_answer = Question.find(qa.question_id).correct_answer
         student_answer = Answer.find(qa.answer_id).content
-        if correct_answer == student_answer 
+        print "\n correct_answer is #{correct_answer}\n"
+         print "\n student answer is answer is #{student_answer}\n"
+        if correct_answer === student_answer 
           points += 1
+          print "\n number of points is #{points}\n"
         end 
       end 
 
-      score = (points.to_f / number_of_questions.to_f).round(2)
-      print "\n#{points}\n"
-      print "\n#{score}\n"
+      percentage = ((points.to_f / number_of_questions.to_f).round(2) * 100)
+      print "\n Points #{points}\n"
+      print "\n Percentage #{percentage}\n"
   
-      case score
-        when score <= 60
-          test.grade = 2
-        when score <= 71
-          test.grade = 3
-        when score <= 76
-          test.grade = 3.5.to_f
-        when score <= 86
-          test.grade = 4
-        when score <= 91
-          test.grade = 4.5.to_f
-        else 
-          test.grade = 5
+      case percentage
+        when 0..60 then test.update_attribute(:grade,2)
+        when 61..70 then test.update_attribute(:grade,3)
+        when 71..75 then test.update_attribute(:grade, 3.5.to_f)
+        when 75..85 then test.update_attribute(:grade,4)
+        when 86..91 then  test.update_attribute(:grade, 4.5.to_f)
+        when 90..100 then test.update_attribute(:grade, 5.to_f)
+        else raise "Invalid input".inspect
       end 
-      
-      results_hash = {percentage: score, grade: test.grade, points: points}
+
+      if test.grade?
+        print "\n The grade of #{test.grade} was successfully updated \n"
+      else 
+       print "\n The grade of #{test.grade} was NOT successfully updated \n"  
+      end  
+
+      results_hash = {percentage: percentage, grade: test.grade, points: points}
     end
   end 
 =begin

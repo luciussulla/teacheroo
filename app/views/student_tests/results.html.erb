@@ -3,14 +3,13 @@
 <p>Student id is:  <%= @student.id %></p>
 <p>Test id is: 	   <%= @test.id %></p>
 <p>StudentTest id is: <%= @test_with_question_answers.id %></p>
-<!-- Later we need to iterate over student's answers and questions and preferably also check if 
-	they are correct and also maybe show the time the student took to solve the test --> 
+<p> Test grade is: <%= @student_test.grade %></p>
 <br/>
 
 <div class="results">
-	<p>You answered corretly to <%= %> out of <%= @test_results[:points]%>questions</p>
-	<p> Your score is:<%= @test_results[:percentage]%>%</p>
-	<p>Your grade is:<%= @test_results[:grade] %></p>
+
+
+
 </div>
 <br/>
 <p>Student's answers are:</p>

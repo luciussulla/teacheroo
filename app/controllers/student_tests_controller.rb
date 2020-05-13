@@ -21,19 +21,21 @@ class StudentTestsController < ApplicationController
   def create 
     @student_test = StudentTest.find(student_test_params[:student_test_id]) # comes from the new action
     @student = @student_test.student 
-    @test = @student_test.test 
-    # .create_student_test joins the student test with question_answer obejects by storing student_test_id, question_id and answer_id 
+    @raw_test = @student_test.test 
+    @question_answers = @student_test.question_answers
+    # .fill_in_student_test joins the student test with question_answer obejects by storing student_test_id, question_id and answer_id 
     # answers are created inside the function
-    StudentTest::SolveTest.fill_in_student_test(student_test_params) # This function should be changed to "fill_in_student_test"
-    redirect_to action: :results, student_id: @student.id, id: @test.id
+    StudentTest::SolveTest.fill_in_student_test(student_test_params)
+    StudentTest::CheckTest.check(@student_test, @question_answers)
+    redirect_to action: :results, student_id: @student.id, test_id: @raw_test.id, student_test_id: @student_test.id
   end 
 
   def results
     @test_with_question_answers = StudentTest.where(student_id: @student.id, test_id: @test.id).first
     @question_answers = @test_with_question_answers.question_answers
-    @test_results = StudentTest::CheckTest.check(@test_with_question_answers, @question_answers)
+    @student_test = StudentTest.find(params[:student_test_id])
   end 
-
+ 
   private   
   def set_student 
   	@student = Student.find(params[:student_id])
