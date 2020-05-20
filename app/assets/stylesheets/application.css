@@ -13,3 +13,29 @@
  *= require_tree .
  *= require_self
  */
+div.flash.notice {
+  width: 90%;
+  min-height: 50px;
+  padding: 10px;
+  background-color: #dfffdf;
+  border-color: #9fcf9f;
+  color: #005f00;
+}
+
+/* In the application layout - applies to all the sites */
+
+.wrapper { 
+	font-family: "Helvetica", sans-serif; 
+	color: 	rgb(105,105,105); 
+	margin: 100px;
+  letter-spacing: 150%; 
+  line-height: 150%; 
+}
+
+.wrapper h1 {
+	color: rgb(47,79,79); 
+}
+
+.wrapper a {
+	color: rgb(47,79,79);
+}

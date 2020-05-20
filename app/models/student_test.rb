@@ -12,6 +12,7 @@ class StudentTest < ApplicationRecord
       # params need to be changed from what they are now 
       # instead of passing student_id and test_id to the params in create function we just pass the 
       # student_test_id - that's all we need to create new QuestionAnswer obejcts 
+      print "\n test is #{test.inspect} and student is: #{student.inspect}\n"
       student_test = StudentTest.new(test_id: test.id, student_id: student.id)
       if student_test.save  
         print "\nStudentTest has been created\n" 
@@ -37,7 +38,7 @@ class StudentTest < ApplicationRecord
 
     def self.build_new_question_answers(student_test_id, answers_array)
       answers_array.each do |answer_hash| 
-        answer_content = answer_hash["answer"]["content"]
+        answer_content = answer_hash["answer"]["content"].to_s.strip!
         question_id = answer_hash["answer"]["question_id"]
         answer = Answer.new(content: answer_content)
         
@@ -70,6 +71,9 @@ class StudentTest < ApplicationRecord
 
   module CheckTest 
     def self.check(test, question_answers_array)
+      # .test_duration function checks how long it took to take the test and puts the minutes value
+      self.test_duration(test)
+
       number_of_questions = question_answers_array.length
       print "\n number of questions is #{number_of_questions} \n"
       points = 0
@@ -104,18 +108,29 @@ class StudentTest < ApplicationRecord
       else 
        print "\n The grade of #{test.grade} was NOT successfully updated \n"  
       end  
-
       results_hash = {percentage: percentage, grade: test.grade, points: points}
     end
+
+    def self.test_duration(test)
+      minutes_taken = ((Time.now - test.created_at)/60).round(0)
+      print "\n Time taken for test is #{minutes_taken}\n"
+      if test.update_attribute(:time_taken, minutes_taken)
+        print "\n time_taken attribute updated \n"
+      else 
+        print "\nProblem updating the test time_taken attribute \n"
+      end 
+    end 
   end 
+
 =begin
+````#question_answer model
     t.integer "question_id", null: false
     t.integer "answer_id", null: false
     t.integer "student_test_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
 
-    # test is where we write the:
+    # test model 
     t.integer "test_id", null: false
     t.integer "student_id", null: false
     t.integer "grade"

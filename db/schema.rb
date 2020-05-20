@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_06_142733) do
+ActiveRecord::Schema.define(version: 2020_05_13_180147) do
 
   create_table "answers", force: :cascade do |t|
     t.string "content"
@@ -90,13 +90,13 @@ ActiveRecord::Schema.define(version: 2020_05_06_142733) do
   end
 
   create_table "students", force: :cascade do |t|
-    t.string "password"
     t.string "login"
     t.string "name"
     t.integer "year"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.integer "group_id"
+    t.string "password_digest"
   end
 
   create_table "teachers", force: :cascade do |t|
@@ -104,6 +104,7 @@ ActiveRecord::Schema.define(version: 2020_05_06_142733) do
     t.integer "control_level"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "password_digest"
   end
 
   create_table "tests", force: :cascade do |t|

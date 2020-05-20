@@ -1,0 +1,32 @@
+<h1>Log in</h1>
+<p>If you are a registered user, please log in. Otherewise go to the registration page (link below the form)</p>
+
+<div class="login">
+	<%= form_tag(action: 'attempt_login') do %> 
+	<table>
+		<tr>
+			<td><%= label_tag(:username) %></td>
+			<td><%= text_field_tag(:username)%></td>
+		</tr>
+		<tr>
+			<td><%= label_tag(:password)%></td>
+			<td><%= password_field_tag(:password)%></td>
+		</tr>
+		<tr>
+			<td><%= label_tag(:user, "Log in as Student") %> </td>
+			<td><%= radio_button_tag(:user, 'student', checked = false, options = {}) %></td>
+		</tr>
+		<tr>
+			<td><%= label_tag(:user, "Log in as Teacher") %> </td>
+			<td><%= radio_button_tag(:user, 'teacher', checked = false, options = {}) %></td>
+		</tr>
+		<tr>
+			<td>&nbsp;</td>
+			<td><%= submit_tag("Log in")%></td>
+		</tr>
+	</table>	
+	<% end %> 	
+</div>
+<br/>
+<br/>
+<p>Do not have an account? You can register here: <%= link_to "Register", new_student_path %></p>

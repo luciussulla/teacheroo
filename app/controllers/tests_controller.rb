@@ -1,4 +1,5 @@
 class TestsController < ApplicationController
+  
   before_action :set_test, only: [:show, :edit, :update, :destroy, :remove_q_set]
   before_action :set_teacher, only: [:show, :update, :edit, :new, :create, :remove_q_set]
   before_action :set_teacher_groups, only: [:edit, :update]

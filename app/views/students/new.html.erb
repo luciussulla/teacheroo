@@ -1,15 +1,16 @@
-<h1>Students#new</h1>
-<p>Find me in app/views/students/new.html.erb</p>
+<h1>Register</h1>
+<p>Please write down your password and login and do not lose it</p>
+<p>Please select your group, it is necessary for your profile to work</p>
+<br/>
+<br/>
 
 <%= form_for @student do |f| %> 
 
-	<%= f.label :password, "Password" %> <br/>
-	<%= f.password_field :password %> <br/>
-	<%= f.label :login, "Login" %> <br/>
-	<%= f.text_field :login %> <br/>
-	<%= f.label :name, "Nickname / initals or student id" %> <br/>
-	<%= f.text_field :name %> <br/>
-	<%= f.collection_select(:group_id, Group.all, :id, :name, :prompt => 'Group') %><br/>
+	<%= f.label :password, "Password" %> <br/><br/>
+	<%= f.password_field :password %> <br/><br/>
+	<%= f.label :name, "Please use your initials, like: 'AZ' or 'BA'"%> <br/><br/>
+	<%= f.text_field :name %> <br/><br/>
+	<%= f.collection_select(:group_id, Group.all, :id, :name, :prompt => 'Group') %><br/><br/>
 	<%= f.submit "Send" %> 
 
 <% end %> 

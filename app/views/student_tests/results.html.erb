@@ -1,27 +1,43 @@
 <h1>These are your test results</h1>
-
-<p>Student id is:  <%= @student.id %></p>
-<p>Test id is: 	   <%= @test.id %></p>
-<p>StudentTest id is: <%= @test_with_question_answers.id %></p>
-<p> Test grade is: <%= @student_test.grade %></p>
-<br/>
-
 <div class="results">
+<!-- 
+	<p>Student id is: 	  <%= @student.id %></p>
+	<p>Test id is: 	 	  <%= @test.id %></p>
+	<p>StudentTest id is: <%= @test_with_question_answers.id %></p>
+-->	
+	<p>Test grade is:	  <%= @student_test.grade %></p>
 
-
-
+	<p>It took you <%= @student_test.time_taken %> minutes to complete the test</p> 
+	<br/>
+	<p>After viewing the test please logout here: <%= link_to "logout", logout_path %></p>
+	<p>Please take a screenshot of the test, just for safety</p>
+	<p>Contact me for further information: jakub.skrzeczkowski@GMAIL.com</p>
 </div>
+
 <br/>
 <p>Student's answers are:</p>
  <% @question_answers.each do |qa| %>
+
 	<% q = Question.find(qa.question_id)%>
- 	<p>Question: <%= q.content %> </p>
- 	<p>Option 1: <%= q.option1 %> </p>
- 	<p>Option 2: <%= q.option2 %> </p>
- 	<p>Option 3: <%= q.option3 %> </p>
- 	<p>Option 4: <%= q.option4 %> </p>
- 	<br/>
- 	<p>Student's Answer: <%= Answer.find(qa.answer_id).content %><p>
- 	<p>Correct Answer: <%= q.correct_answer %></p>
+	<% correct_answer = q.correct_answer %>
+	<% student_answer = Answer.find(qa.answer_id).content%> 
+
+	<% if correct_answer == student_answer %>
+		<% color="green" %> 
+	<% else %> 
+		<% color="red" %> 
+	<% end %> 
+
+	<div style="border: 1px solid <%= color %>; padding: 20px; max-width: 800px;">
+		<p>Student's Answer: <%= student_answer %><p>
+	 	<p>Correct Answer:  <%= correct_answer %></p>
+	 	<br/>
+	 	<p>Question: <%= q.content %> </p>
+	 	<p>Option 1: <%= q.option1 %> </p>
+	 	<p>Option 2: <%= q.option2 %> </p>
+	 	<p>Option 3: <%= q.option3 %> </p>
+	 	<p>Option 4: <%= q.option4 %> </p>
+	 </div> 	
+	 <br/>
  	<br/>
  <% end %> 

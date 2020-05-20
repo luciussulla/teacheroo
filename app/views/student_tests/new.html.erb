@@ -1,18 +1,31 @@
 <h1> New Student's Test </h1>
 <p>NEW STUDENT TEST ID: <%= @new_student_test.id %> </p>
-<p>Student id in the student_test is: <%= @new_student_test.student.id %></p>
+<p>Student id in the student_test is: <%= @new_student_test.student.id %> </p>
+
+<% unless @new_student_test.student.id %>
+	<h3>There seems to be the problem with the test - please contact the administrator</h3>
+	<p>You can reach me at "jakub.skrzeczkowski@gmail.com"</p>
+<% end %> 
+
 <p><%= @test.test_name ? "Your test name is: #{@test.test_name}" : "Your test does not have a name" %><p>
 
 <%= form_for :student_test, url: complete_exam_student_test_path do  |f| %>
-
   <%= f.hidden_field :student_test_id, value: @new_student_test.id %> 
-
-  <% @test_questions.each do |question| %> 
+  <% i = 0 %> 
+  <% @test_questions.each do |question| %>
+      <% i+=1 %> 
+      <br/>
+      <p>Question <%= i %></p>
       <p><%= label_tag :answer, question.content %></p>
-      <p><%= f.text_field "[answers][]answer[content]" %></p>
-      <p><%= f.hidden_field "[answers][]answer[question_id]",value: question.id %> </p>
+      <p>a) <%= question.option1 %></p>
+      <p>b) <%= question.option2 %></p>
+      <p>c) <%= question.option3 %></p>
+      <p>d) <%= question.option4 %></p>
+      <br/>
+      <p>Type "a" or "b" or "c" or "d" here: <%= f.text_field "[answers][]answer[content]" %></p>
+      <p><%= f.hidden_field "[answers][]answer[question_id]", value: question.id %></p>
     <!-- <%= f.check_box(:questions, {:multiple => true, checked: false}, question.id, false) %> -->
   <% end %> 
-  <%= f.submit "Submit" %> 
-  
+  <br/>
+  <%= f.submit "Submit Your Test" %> 
 <% end %>

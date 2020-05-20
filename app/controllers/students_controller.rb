@@ -1,6 +1,8 @@
 class StudentsController < ApplicationController
-  before_action :set_student, only: [:show, :edit, :update, :destroy]
 
+  before_action :set_student, only: [:show]
+  before_action :confirm_log_in, only: [:show]
+  before_action :verify_student, only: [:show]
 
   def index
     @students = Student.all 
@@ -22,19 +24,8 @@ class StudentsController < ApplicationController
   end
 
   def show
-    
-  end
-
-  def edit
-  end
-
-  def update
-  end
-
-  def delete
-  end
-
-  def destroy
+    @students_done_tests = @student.group.tests
+    @students_pending_tests 
   end
 
   def set_student
@@ -44,4 +35,16 @@ class StudentsController < ApplicationController
   def student_params
     params.require(:student).permit(:password, :login, :name, :group_id, :year)
   end
+
+  def verify_student  
+    unless current_teacher
+      if current_student != Student.find(params[:id])
+        flash[:notice] = "You do not have authorisation to view other user's sites. If this error persists contact the administrator."
+        print "\n current user is #{current_student}\n"
+        print "\n current user is not the same as the user's profile you request\n"
+        redirect_to student_path current_student
+        return false 
+      end
+    end   
+  end  
 end

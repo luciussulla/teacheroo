@@ -8,13 +8,20 @@
 <% unless @student.group.tests.blank? %> 
 	<p>Student's tests: </p>
 	<% @student.group.tests.each do |test| %> 
-		<p> Test id is: <%= test.id %> </p>
-		<p>Take the test: <%= link_to "Link to student's test", take_exam_student_test_path(@student, test) %></p>
+
+		<% if @student.student_tests.grade %>
+			<p>Your grade from the first test is: <%= @student.student_tests.first.grade %></p>
+		<% else %>
+			<p> Test id is: <%= test.id %> </p>
+			<p>Take the test: <%= link_to "Link to student's test", take_exam_student_test_path(@student, test) %></p>
+		<% end %>
+		
 	<% end %>
-	<% else %> 
+<% else %> 	
 	<p> Currently there are no new tests </p>
 <% end %>
 
+<p><%= link_to "logout", controller: "access", action: "logout" %></p>
 
 
 

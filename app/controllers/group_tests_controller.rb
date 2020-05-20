@@ -1,4 +1,5 @@
 class GroupTestsController < ApplicationController
+
   def index
   end
 
