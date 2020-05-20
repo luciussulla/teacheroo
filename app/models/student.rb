@@ -4,6 +4,9 @@ class Student < ApplicationRecord
 	belongs_to :group
 	has_secure_password
 
+
+	alias_attribute :password_digest, :password
+
 	def students_done_tests
 		done_tests = self.student_tests
 	end 
