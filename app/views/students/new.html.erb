@@ -1,16 +1,20 @@
 <h1>Register</h1>
 <p>Please write down your password and login and do not lose it</p>
-<p>Please select your group, it is necessary for your profile to work</p>
-<br/>
+<p>ALL FIELDS MUST BE FILLED IN FOR THIS APP TO WORK</p>
+
 <br/>
 
 <%= form_for @student do |f| %> 
 
-	<%= f.label :password, "Password" %> <br/><br/>
-	<%= f.password_field :password %> <br/><br/>
 	<%= f.label :name, "Please use your initials, like: 'AZ' or 'BA'"%> <br/><br/>
-	<%= f.text_field :name %> <br/><br/>
-	<%= f.collection_select(:group_id, Group.all, :id, :name, :prompt => 'Group') %><br/><br/>
-	<%= f.submit "Send" %> 
+	<%= f.text_field :name %> <br/><br/><br/>
+
+	<%= f.label :password, "Password" %> <br/><br/>
+	<%= f.password_field :password %> <br/><br/><br/>
+
+	<p>Please select your group, it is necessary for your profile to work</p>
+	<%= f.collection_select(:group_id, Group.all, :id, :name, :prompt => 'Group') %><br/><br/><br/>
+
+	<%= f.submit "Register" %> 
 
 <% end %> 

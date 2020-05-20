@@ -9,6 +9,13 @@ class StudentsController < ApplicationController
   end
 
   def new
+    @groups = ["PNJA - I a01 a",
+              "PNJA - I a03 b",
+              "PNJA - I a04 b",
+              "Zaoczne - PNJA - I az04 b",
+              "Zaoczne - PNJA - III apz01 b",
+              "ZaocznePNJA - I az01 a",
+              "ZaocznePNJA - I az02 a"]
     @student = Student.new
   end
 

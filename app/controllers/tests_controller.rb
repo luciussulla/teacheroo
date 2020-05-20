@@ -135,7 +135,7 @@ class TestsController < ApplicationController
   end 
 
   def set_teacher 
-  	@teacher = set_test.teacher
+  	@teacher = Teacher.find(params[:teacher_id]) #
   	#print  "Inside set_teacher. params[:teacher_id] is #{params[:teacher_id]}"
   end 
 

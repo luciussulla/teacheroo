@@ -38,7 +38,7 @@ class StudentTest < ApplicationRecord
 
     def self.build_new_question_answers(student_test_id, answers_array)
       answers_array.each do |answer_hash| 
-        answer_content = answer_hash["answer"]["content"].to_s.strip!
+        answer_content = answer_hash["answer"]["content"].gsub(/\s+/,'')
         question_id = answer_hash["answer"]["question_id"]
         answer = Answer.new(content: answer_content)
         

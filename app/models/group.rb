@@ -1,6 +1,6 @@
 class Group < ApplicationRecord
 	has_many :students
-	validates_uniqueness_of :student_id
+	#validates_uniqueness_of :student_id
 	has_many :group_tests
 	has_many :tests, through: :group_tests
 
@@ -10,15 +10,17 @@ class Group < ApplicationRecord
 	# be created independently of belonging or not belonging to a teacher
 
 	def self.add_students_to_group(group, students_ids)
-		print "\n inside the add_students_to_group function \n"
-		print "\n group id is #{group.id} student_ids are: #{students_ids} \n"
-		group_id = group.id
-		students_ids.each do |student_id| 
-			student = Student.find(student_id.to_i)
-			student.group_id = group_id.to_i
-			student.save
-			print "\n Student was created \n"
-		end 
+		if students_ids.present?
+			print "\n inside the add_students_to_group function \n"
+			print "\n group id is #{group.id} student_ids are: #{students_ids} \n"
+			group_id = group.id
+			students_ids.each do |student_id| 
+				student = Student.find(student_id.to_i)
+				student.group_id = group_id.to_i
+				student.save
+				print "\n Student was created \n"
+			end
+		end 	
 	end 
 
 	def has_test?(test)
