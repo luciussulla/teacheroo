@@ -7,7 +7,7 @@
 <% unless @student.group.tests.blank? %> 
 	<% @student.group.tests.each do |test| %> 
 			<!-- <p> Test id is: <%= test.id %> </p> -->
-			<p>Take the test by clicking the link: <%= link_to "Link to student's test", take_exam_student_test_path(@student, test) %></p>
+			<p>Take the test called <%= test.test_name %> by clicking the link: <%= link_to "Link to student's test", take_exam_student_test_path(@student, test) %></p>
 	<% end %>
 <% else %> 	
 	<p> Currently there are no new tests </p>
